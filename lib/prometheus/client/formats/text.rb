@@ -41,11 +41,24 @@ module Prometheus
         def self.representation(metric, label_set, value, &block)
           set = metric.base_labels.merge(label_set)
 
-          if metric.type == :summary
+          case metric.type
+          when :summary
             summary(metric.name, set, value, &block)
+          when :histogram
+            histogram(metric.name, set, value, &block)
           else
             yield metric(metric.name, labels(set), value)
           end
+        end
+
+        def self.histogram(name, set, value)
+          value.each do |q, v|
+            yield metric(name, labels(set.merge(le: q)), v)
+          end
+
+          l = labels(set)
+          yield metric("#{name}_sum", l, value.sum)
+          yield metric("#{name}_count", l, value.total)
         end
 
         def self.summary(name, set, value)

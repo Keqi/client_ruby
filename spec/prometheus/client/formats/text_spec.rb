@@ -9,6 +9,12 @@ describe Prometheus::Client::Formats::Text do
     end
   end
 
+  let(:histogram_value) do
+    { 10 => 1, 20 => 2, 30 => 2 }.tap do |value|
+      allow(value).to receive_messages(sum: 15.2, total: 2)
+    end
+  end
+
   let(:registry) do
     double(metrics: [
       double(
@@ -43,6 +49,13 @@ describe Prometheus::Client::Formats::Text do
         type: :summary,
         values: { { code: '1' } => summary_value },
       ),
+      double(
+        name: :xuq,
+        docstring: 'xuq description',
+        base_labels: {},
+        type: :histogram,
+        values:{ { code: 'ah' } => histogram_value },
+      ),
     ])
   end
 
@@ -67,6 +80,13 @@ qux{for="sake",code="1",quantile="0.9"} 8.32
 qux{for="sake",code="1",quantile="0.99"} 15.3
 qux_sum{for="sake",code="1"} 1243.21
 qux_count{for="sake",code="1"} 93
+# TYPE xuq histogram
+# HELP xuq xuq description
+xuq{code="ah",le="10"} 1
+xuq{code="ah",le="20"} 2
+xuq{code="ah",le="30"} 2
+xuq_sum{code="ah"} 15.2
+xuq_count{code="ah"} 2
       TEXT
     end
   end

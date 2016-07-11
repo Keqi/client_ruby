@@ -43,6 +43,10 @@ module Prometheus
         register(Gauge.new(name, docstring, base_labels))
       end
 
+      def histogram(*args)
+        register(Histogram.new(*args))
+      end
+
       def exist?(name)
         @metrics.key?(name)
       end
