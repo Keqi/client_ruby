@@ -55,6 +55,7 @@ module Prometheus
           value.each do |q, v|
             yield metric(name, labels(set.merge(le: q)), v)
           end
+          yield metric(name, labels(set.merge(le: '+Inf')), value.total)
 
           l = labels(set)
           yield metric("#{name}_sum", l, value.sum)

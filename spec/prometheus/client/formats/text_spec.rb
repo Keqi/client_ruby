@@ -85,6 +85,7 @@ qux_count{for="sake",code="1"} 93
 xuq{code="ah",le="10"} 1
 xuq{code="ah",le="20"} 2
 xuq{code="ah",le="30"} 2
+xuq{code="ah",le="+Inf"} 2
 xuq_sum{code="ah"} 15.2
 xuq_count{code="ah"} 2
       TEXT
